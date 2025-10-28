@@ -13,28 +13,12 @@ private:
 	std::string phone_number;
 
 public:
-	void set(std::string f, std::string l, std::string n, std::string d, std::string p)
-	{
-		first_name = f;
-		last_name = l;
-		nickname = n;
-		darkest_secret = d;
-		phone_number = p;
-	}
-	std::string getName() {
-		return (first_name);
-	}
-	std::string getLast() {
-		return (last_name);
-	}
-	std::string getNickname() {
-		return (nickname);
-	}
-	std::string getSecret() {
-		return (darkest_secret);
-	}
-	std::string getPhone() {
-		return (phone_number);
-	}
+	void set(std::string f, std::string l, std::string n, std::string d, std::string p);
+	std::string getName();
+	std::string getLast();
+	std::string getNickname();
+	std::string getSecret();
+	std::string getPhone();
 };
+
 #endif
