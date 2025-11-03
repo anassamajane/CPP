@@ -3,6 +3,7 @@
 
 Phonebook::Phonebook() {
 	next_idx = 0;
+	num_contacts = 0;
 }
 
 void Phonebook::add_contact() {
@@ -27,6 +28,8 @@ void Phonebook::add_contact() {
 	}
 	contacts[next_idx].set(f, l, n, d, p);
 	next_idx = (next_idx + 1) % 8;
+	if (num_contacts < 8)
+		num_contacts++;
 	std::cout << "Contact added!" << std::endl;
 }
 
@@ -34,10 +37,8 @@ void Phonebook::search_contact() {
 	std::cout << "|     Index|First Name| Last Name|  Nickname|" << std::endl;
 	std::cout << " -------------------------------------------" << std::endl;
 
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < num_contacts; i++) {
 		std::string fn = contacts[i].getName();
-		if (fn.empty())
-			continue;
 		std::string ln = contacts[i].getLast();
 		std::string nn = contacts[i].getNickname();
 
@@ -50,5 +51,39 @@ void Phonebook::search_contact() {
 		          << std::setw(10) << ln << "|"
 		          << std::setw(10) << nn << "|" << std::endl;
 	}
+	if (num_contacts == 0) {
+		std::cout << "             No contact available\n";
+	}
 	std::cout << " -------------------------------------------" << std::endl;
+
+	if (num_contacts == 0) {
+		return;
+	}
+	display_info();
+}
+
+void Phonebook::display_info() {
+	std::string input;
+	std::cout << "Enter index to view details: ";
+	if (!std::getline(std::cin, input)) {
+		std::cout << "\nEOF detected." << std::endl;
+		exit(0);
+	}
+	
+	if (input.length() != 1 || !std::isdigit(input[0])) {
+		std::cout << "Invalid index.\n";
+		return;
+	}
+	int idx = input[0] - '0';
+	if (idx < 1 || idx > num_contacts) {
+		std::cout << "Invalid index.\n";
+		return;
+	}
+
+	Contact c = contacts[idx - 1];
+	std::cout << "First name: " << c.getName() << std::endl;
+	std::cout << "Last name: " << c.getLast() << std::endl;
+	std::cout << "Nickname: " << c.getNickname() << std::endl;
+	std::cout << "Darkest secret: " << c.getSecret() << std::endl;
+	std::cout << "Phone number: " << c.getPhone() << std::endl;
 }
