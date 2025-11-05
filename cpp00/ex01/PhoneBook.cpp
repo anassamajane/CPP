@@ -1,12 +1,12 @@
 #include "PhoneBook.hpp"
 #include "Utils.hpp"
 
-Phonebook::Phonebook() {
+PhoneBook::PhoneBook() {
 	next_idx = 0;
 	num_contacts = 0;
 }
 
-void Phonebook::add_contact() {
+void PhoneBook::add_contact() {
 	std::string f = get_field("First name: ");
 	std::string l = get_field("Last name: ");
 	std::string n = get_field("Nickname: ");
@@ -33,7 +33,7 @@ void Phonebook::add_contact() {
 	std::cout << "Contact added!" << std::endl;
 }
 
-void Phonebook::search_contact() {
+void PhoneBook::search_contact() {
 	std::cout << "|     Index|First Name| Last Name|  Nickname|" << std::endl;
 	std::cout << " -------------------------------------------" << std::endl;
 
@@ -52,17 +52,15 @@ void Phonebook::search_contact() {
 		          << std::setw(10) << nn << "|" << std::endl;
 	}
 	if (num_contacts == 0) {
-		std::cout << "             No contact available\n";
-	}
-	std::cout << " -------------------------------------------" << std::endl;
-
-	if (num_contacts == 0) {
+		std::cout << "             No contact available\n";	
+		std::cout << " -------------------------------------------" << std::endl;
 		return;
 	}
+	std::cout << " -------------------------------------------" << std::endl;
 	display_info();
 }
 
-void Phonebook::display_info() {
+void PhoneBook::display_info() {
 	std::string input;
 	std::cout << "Enter index to view details: ";
 	if (!std::getline(std::cin, input)) {

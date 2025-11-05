@@ -3,9 +3,10 @@
 
 int	main()
 {
-	Phonebook pb;
+	PhoneBook pb;
 	std::string command;
 
+	std::cout << "Please enter: ADD or SEARCH or EXIT\n";
 	while (true)
 	{
 		std::cout << "Enter Command: ";
