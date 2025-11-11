@@ -17,7 +17,7 @@ void PhoneBook::add_contact() {
 		p = get_field("Phone number: ");
 		bool valid = true;
 		for (size_t i = 0; i < p.size(); i++) {
-			if (!std::isdigit(static_cast<unsigned char>(p[i]))) {
+			if (!std::isdigit((p[i]))) {
 				std::cout << "Phone number must contain only digits!\n";
 				valid = false;
 				break;
