@@ -1,11 +1,11 @@
 CPP = c++
 CPPFLAGS = -Wall -Wextra -Werror -std=c++98
 
-SRC = main.cpp PhoneBook.cpp Contact.cpp
+SRC = megaphone.cpp
 
 OBJ = $(SRC:%.cpp=%.o)
 
-NAME   = PhoneBook
+NAME   = megaphone
 
 all: $(NAME)
 

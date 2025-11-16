@@ -1,5 +1,4 @@
 #include "PhoneBook.hpp"
-#include "Utils.hpp"
 
 PhoneBook::PhoneBook() {
 	next_idx = 0;
@@ -84,4 +83,22 @@ void PhoneBook::display_info() {
 	std::cout << "Nickname: " << c.getNickname() << std::endl;
 	std::cout << "Darkest secret: " << c.getSecret() << std::endl;
 	std::cout << "Phone number: " << c.getPhone() << std::endl;
+}
+
+bool get_input(const std::string &prompt, std::string &out) {
+	std::cout << prompt;
+	if (!std::getline(std::cin, out)) {
+		std::cout << "\nEOF detected." << std::endl;
+		exit(0);
+	}
+	return !out.empty();
+}
+
+std::string get_field(const std::string &prompt) {
+	std::string input;
+	while (true) {
+		if (get_input(prompt, input) && !input.empty())
+			return input;
+		std::cout << "Input cannot be empty, try again!" << std::endl;
+	}
 }

@@ -19,4 +19,8 @@ public:
 	void search_contact();
 	void display_info();
 };
+
+bool get_input(const std::string &prompt, std::string &out);
+std::string get_field(const std::string &prompt);
+
 #endif
