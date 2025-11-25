@@ -21,7 +21,7 @@ int	main()
 		else if (command == "EXIT")
 			break;
 		else
-			std::cout << "Invalid command" << std::endl;
+			std::cout << "Invalid command\n";
 	}
 	return (0);
 }

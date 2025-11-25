@@ -29,12 +29,12 @@ void PhoneBook::add_contact() {
 	next_idx = (next_idx + 1) % 8;
 	if (num_contacts < 8)
 		num_contacts++;
-	std::cout << "Contact added!" << std::endl;
+	std::cout << "Contact added!\n";
 }
 
 void PhoneBook::search_contact() {
-	std::cout << "|     Index|First Name| Last Name|  Nickname|" << std::endl;
-	std::cout << " -------------------------------------------" << std::endl;
+	std::cout << "|     Index|First Name| Last Name|  Nickname|\n";
+	std::cout << " -------------------------------------------\n";
 
 	for (int i = 0; i < num_contacts; i++) {
 		std::string fn = contacts[i].getName();
@@ -48,14 +48,14 @@ void PhoneBook::search_contact() {
 		std::cout << "|         " << i + 1 << "|"
 		          << std::setw(10) << fn << "|"
 		          << std::setw(10) << ln << "|"
-		          << std::setw(10) << nn << "|" << std::endl;
+		          << std::setw(10) << nn << "|\n";
 	}
 	if (num_contacts == 0) {
 		std::cout << "             No contact available\n";	
-		std::cout << " -------------------------------------------" << std::endl;
+		std::cout << " -------------------------------------------\n";
 		return;
 	}
-	std::cout << " -------------------------------------------" << std::endl;
+	std::cout << " -------------------------------------------\n";
 	display_info();
 }
 
@@ -78,11 +78,11 @@ void PhoneBook::display_info() {
 	}
 
 	Contact c = contacts[idx - 1];
-	std::cout << "First name: " << c.getName() << std::endl;
-	std::cout << "Last name: " << c.getLast() << std::endl;
-	std::cout << "Nickname: " << c.getNickname() << std::endl;
-	std::cout << "Darkest secret: " << c.getSecret() << std::endl;
-	std::cout << "Phone number: " << c.getPhone() << std::endl;
+	std::cout << "First name: " << c.getName() << "\n";
+	std::cout << "Last name: " << c.getLast() << "\n";
+	std::cout << "Nickname: " << c.getNickname() << "\n";
+	std::cout << "Darkest secret: " << c.getSecret() << "\n";
+	std::cout << "Phone number: " << c.getPhone() << "\n";
 }
 
 bool get_input(const std::string &prompt, std::string &out) {
@@ -99,6 +99,6 @@ std::string get_field(const std::string &prompt) {
 	while (true) {
 		if (get_input(prompt, input) && !input.empty())
 			return input;
-		std::cout << "Input cannot be empty, try again!" << std::endl;
+		std::cout << "Input cannot be empty, try again!\n";
 	}
 }
