@@ -1,5 +1,5 @@
-CPP = c++
-CPPFLAGS = -Wall -Wextra -Werror -std=c++98
+CXX = c++
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 
 SRC = main.cpp Zombie.cpp newZombie.cpp randomChump.cpp
 
@@ -10,7 +10,7 @@ NAME   = Zombie
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CPP) $(CPPFLAGS) $(OBJ) -o $(NAME)
+	$(CXX) $(CXXFLAGS) $(OBJ) -o $(NAME)
 
 clean:
 	rm -rf $(OBJ)
@@ -20,4 +20,5 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all NAME clean fclean re
+.PHONY: all clean fclean re
+.SECONDARY: $(OBJ)

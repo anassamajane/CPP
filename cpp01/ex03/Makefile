@@ -1,11 +1,11 @@
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 
-SRC = main.cpp Zombie.cpp zombieHorde.cpp
+SRC = main.cpp HumanA.cpp HumanB.cpp Weapon.cpp
 
 OBJ = $(SRC:%.cpp=%.o)
 
-NAME   = Zombie
+NAME   = Weapon
 
 all: $(NAME)
 
