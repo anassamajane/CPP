@@ -16,7 +16,6 @@ Animal &Animal::operator=(const Animal &other)
     
     if (this != &other)
         type = other.type;
-    std::cout << "Animal copy assigment called\n";//
     return *this;
 }
 

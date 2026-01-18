@@ -21,7 +21,6 @@ Dog &Dog::operator=(const Dog &other)
         delete brain;
         brain = new Brain(*other.brain);
     }
-    std::cout << "Dog copy assigment called\n";
     return *this;
 }
 

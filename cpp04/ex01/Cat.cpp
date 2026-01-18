@@ -21,7 +21,6 @@ Cat &Cat::operator=(const Cat &other)
         delete brain;
         brain = new Brain(*other.brain);
     }
-    std::cout << "Cat copy assigment called\n";//
     return *this;
 }
 

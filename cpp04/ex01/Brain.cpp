@@ -18,7 +18,6 @@ Brain &Brain::operator=(const Brain &other)
         for (int i = 0; i < 100; i++)
             ideas[i] = other.ideas[i];
     }
-    std::cout << "Brain copy assigment called\n";//
     return *this;
 }
 
@@ -26,6 +25,7 @@ Brain::~Brain()
 {
     std::cout << "Brain destructor called\n";
 }
+
 void Brain::setIdea(int index, const std::string &idea)
 {
     if (index >= 0 && index < 100)
@@ -36,5 +36,5 @@ std::string Brain::getIdea(int index) const
 {
     if (index >= 0 && index < 100)
         return (ideas[index]);
-    return "invalid index";
+    return "Invalid index";
 }
