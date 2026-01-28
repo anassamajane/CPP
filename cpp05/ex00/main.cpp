@@ -59,42 +59,5 @@ int main()
     {
         std::cout << e.what() << '\n';
     }
-    
-
-    std::cout << "\n\n\n========== COPY CONSTRUCTOR ==========" << std::endl;
-    try
-    {
-        Bureaucrat original("boss", 1);
-        Bureaucrat copy(original);
-
-        std::cout << "Original: " << original << std::endl;
-        std::cout << "Copy:     " << copy << std::endl;
-    }
-    catch (std::exception &e)
-    {
-        std::cout << e.what() << std::endl;
-    }
-
-    std::cout << "\n========== ASSIGNMENT OPERATOR ==========" << std::endl;
-    try
-    {
-        Bureaucrat x("x", 10);
-        Bureaucrat y("y", 100);
-
-        std::cout << "Before assignment:" << std::endl;
-        std::cout << x << std::endl;
-        std::cout << y << std::endl;
-
-        y = x;
-
-        std::cout << "After assignment:" << std::endl;
-        std::cout << x << std::endl;
-        std::cout << y << std::endl;
-    }
-    catch (std::exception &e)
-    {
-        std::cout << e.what() << std::endl;
-    }
-
     return 0;
 }

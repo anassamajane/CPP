@@ -6,7 +6,7 @@ SRC = Bureaucrat.cpp AForm.cpp ShrubberyCreationForm.cpp \
 
 OBJ = $(SRC:%.cpp=%.o)
 
-NAME = AForm
+NAME = Intern
 
 all: $(NAME)
 

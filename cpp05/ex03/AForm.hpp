@@ -5,7 +5,7 @@
 #include <string>
 #include <exception>
 
-class Bureaucrat; // Forward declaration
+class Bureaucrat;
 
 class AForm {
     private:
@@ -15,6 +15,7 @@ class AForm {
         const int gradeToExecute;
     
     public:
+        AForm();
         AForm(const std::string &name, int gradeToSign, int gradeToExecute);
         AForm(const AForm &other);
         AForm &operator=(const AForm &other);
