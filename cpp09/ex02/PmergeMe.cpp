@@ -68,149 +68,177 @@ bool PmergeMe::parseAndValidate(const std::string &str, int &out) const
 
 // vector implementation
 
-std::vector<PmergeMe::Node> PmergeMe::createNodesVector() const
+std::vector<PmergeMe::v_Node> PmergeMe::createNodesVector() const
 {
-    std::vector<Node> nodes;
+    std::vector<v_Node> nodes;
 
     for (std::size_t i = 0; i < _vector.size(); i++)
-        nodes.push_back(Node(_vector[i]));
+        nodes.push_back(v_Node(_vector[i]));
     return nodes;
 }
 
-std::vector<PmergeMe::Node> PmergeMe::makePairsVector(const std::vector<Node> &nodes)
+void PmergeMe::makePairsVector(std::vector<v_Node> &nodes)
 {
-    std::vector<Node> winners;
-
-    for (std::size_t i = 0; i + 1 < nodes.size(); i += 2)
+    std::vector<v_Node> winners;
+    
+    winners.reserve(nodes.size() / 2);
+    for (std::size_t i = 0; i < nodes.size(); i += 2)
     {
-        Node small = nodes[i];
-        Node large = nodes[i + 1];
-
-        if (small.value > large.value)
-            std::swap(small, large);
-        
-        large.losers.push_back(small);
-        winners.push_back(large);
+        if (nodes[i].value < nodes[i + 1].value)
+            std::swap(nodes[i], nodes[i + 1]);
+        nodes[i].losers.push_back(nodes[i + 1]);
+        winners.push_back(nodes[i]);
     }
-    return winners;
+    nodes = winners;
 }
 
-void printNodeTree(std::ostream &os, const PmergeMe::Node &item, const std::string &prefix, bool isLast)
+static bool lower_bound_compv(const PmergeMe::v_Node &item1, const PmergeMe::v_Node &item2)
 {
-    os << prefix << (isLast ? "└── " : "├── ") 
-       << "\033[1;97mNode:\e[0m \033[1;32m" << item.value << "\e[0m\n";
-
-    std::size_t size = item.losers.size();
-    for (std::size_t i = 0; i < size; ++i)
-    {
-        bool lastLoser = (i == size - 1);
-        printNodeTree(os, item.losers[i], prefix + (isLast ? "    " : "│   "), lastLoser);
-    }
+    return item1.value < item2.value;
 }
 
-std::ostream &operator<<(std::ostream &os, const PmergeMe::Node &item)
-{
-    os << "\033[1;97mNode:\e[0m \033[1;32m" << item.value << "\e[0m\n";
-    
-    std::size_t size = item.losers.size();
-    for (std::size_t i = 0; i < size; ++i)
-    {
-        printNodeTree(os, item.losers[i], "", (i == size - 1));
-    }
-    
-    return os;
-}
-
-std::vector<PmergeMe::Node> PmergeMe::fordJohnsonVector(const std::vector<Node> &nodes)
-{
-    // for (std::size_t i = 0; i < nodes.size(); i++)
-    //         std::cout << nodes[i];
-    // std::cout << std::endl;
-
-    bool hasStraggler = nodes.size() % 2 != 0;
-    Node straggler;
-
-    if (hasStraggler)
-        straggler = nodes.back();
-
-    if (nodes.size() <= 1)// up up up
-    {
-        std::cout << "===== RECURSION FINISHED =====" << std::endl;
-        return nodes;
-    }
-
-    std::vector<Node> winners = makePairsVector(nodes);
-    std::vector<PmergeMe::Node> result = fordJohnsonVector(winners);
-    
-    result = insertLosers(result, winners);
-
-    if (hasStraggler)
-    {
-        std::vector<Node>::iterator it = result.begin();
-
-        while (it != result.end() && it->value < straggler.value)
-            ++it;
-
-        result.insert(it, straggler);
-    }
-
-    // std::cout << "RESULT FROM RECURSION:" << std::endl;
-    // for (std::size_t i = 0; i < result.size(); i++)
-    //     std::cout << result[i];
-
-    return (result);
-}
-
-
-std::vector<PmergeMe::Node> PmergeMe::insertLosers(const std::vector<Node> &sorted, const std::vector<Node> &winners) const
-{
-    std::vector<Node> result = sorted;
-    std::vector<std::size_t> order = generateInsertionOrder(winners.size());
-    
-    
-    std::cout << "Insertion order: ";
-    for (std::size_t i = 0; i < order.size(); i++)
-        std::cout << order[i] << " ";
-    std::cout << std::endl;
-
-
-
-    for (std::size_t i = 0; i < order.size(); i++)
-    {
-        std::size_t loserIndex = order[i];
-
-        if (loserIndex >= winners.size())
-            continue;
-
-        Node loser = winners[loserIndex].losers.back();
-        std::vector<Node>::iterator winnerIt = result.begin();
-
-        while (winnerIt != result.end())
-        {
-            if (winnerIt->value == winners[loserIndex].value)
-                break;
-            ++winnerIt;
-        }
-
-        std::vector<Node>::iterator it = result.begin();
-
-        while (it != winnerIt && it->value < loser.value)
-            ++it;
-        
-        result.insert(it, loser);
-    }
-    return result;
-}
-
-
-std::vector<std::size_t> PmergeMe::generateInsertionOrder(std::size_t size) const
+std::vector<std::size_t> PmergeMe::generateInsertionOrderVector(std::size_t size) const
 {
     std::vector<std::size_t> order;
     
     if (size == 0)
-    return order;
+        return order;
     
-    order.push_back(0);
+    order.push_back(1);
+    
+    std::size_t previous = 1;
+    std::size_t current = 3;
+    
+    while (previous < size)
+    {
+        std::size_t end = current;
+        
+        if (end > size)
+            end = size;
+        
+        std::size_t i = end;
+        
+        while (i > previous)
+        {
+            order.push_back(i);
+            --i;
+        }
+        
+        std::size_t next = current + 2 * previous;
+        previous = current;
+        current = next;
+    }
+    return order;
+}
+
+void PmergeMe::fordJohnsonVector(std::vector<v_Node> &nodes)
+{
+    if (nodes.size() <= 1)
+        return;
+
+    bool hasStraggler = nodes.size() % 2 != 0;
+    v_Node straggler;
+
+    if (hasStraggler)
+    {
+        straggler = nodes.back();
+        nodes.pop_back();
+    }
+
+    makePairsVector(nodes);
+    std::size_t generation = nodes[0].losers.size();
+    //print_me(nodes);
+    fordJohnsonVector(nodes);
+
+    std::vector<std::size_t> order = generateInsertionOrderVector(nodes.size());
+
+    for (std::size_t j = 0; j < order.size(); j++)
+    {
+        std::size_t target = order[j] - 1;
+        for (std::size_t i = 0; i < nodes.size(); i++)
+        {
+            if (nodes[i].losers.size() != generation)
+            {
+                continue;
+            }
+
+            if (target == 0)
+            {
+                v_Node guest = nodes[i].losers.back();
+                std::vector<v_Node>::iterator place = std::lower_bound(nodes.begin(), nodes.begin() + i, guest, lower_bound_compv);
+                nodes.insert(place, guest);
+                break;
+            }
+            target--;
+        }
+    }
+    for (std::size_t i = 0; i < nodes.size(); i++)
+    {
+        if (nodes[i].losers.size() == generation)
+            nodes[i].losers.pop_back();
+    }
+    
+    if (hasStraggler)
+    {
+        std::vector<v_Node>::iterator place = std::lower_bound(nodes.begin(), nodes.end(), straggler, lower_bound_compv);
+        nodes.insert(place, straggler);
+    }
+    //print_me(nodes);
+}
+
+void PmergeMe::sortVector()
+{
+    std::vector<v_Node> nodes = createNodesVector();
+
+    fordJohnsonVector(nodes);
+    _vector.clear();
+
+    for (std::size_t i = 0; i < nodes.size(); i++)
+        _vector.push_back(nodes[i].value);
+}
+
+
+// deque implementation
+
+std::deque<PmergeMe::d_Node> PmergeMe::createNodesDeque() const
+{
+    std::deque<d_Node> nodes;
+
+    for (std::size_t i = 0; i < _deque.size(); i++)
+        nodes.push_back(d_Node(_deque[i]));
+    return nodes;
+}
+
+
+void PmergeMe::makePairsDeque(std::deque<d_Node> &nodes)
+{
+    std::deque<d_Node> winners;
+
+    for (std::size_t i = 0; i < nodes.size(); i += 2)
+    {
+        if (nodes[i].value < nodes[i + 1].value)
+            std::swap(nodes[i], nodes[i + 1]);
+        
+        nodes[i].losers.push_back(nodes[i + 1]);
+        winners.push_back(nodes[i]);
+    }
+
+    nodes = winners;
+}
+
+static bool lower_bound_compd(const PmergeMe::d_Node &item1, const PmergeMe::d_Node &item2)
+{
+    return item1.value < item2.value;
+}
+
+std::deque<std::size_t> PmergeMe::generateInsertionOrderDeque(std::size_t size) const
+{
+    std::deque<std::size_t> order;
+    
+    if (size == 0)
+        return order;
+    
+    order.push_back(1);
     
     std::size_t previous = 1;
     std::size_t current = 3;
@@ -226,8 +254,8 @@ std::vector<std::size_t> PmergeMe::generateInsertionOrder(std::size_t size) cons
         
         while (i > previous)
         {
-            --i;
             order.push_back(i);
+            --i;
         }
         
         std::size_t next = current + 2 * previous;
@@ -237,15 +265,95 @@ std::vector<std::size_t> PmergeMe::generateInsertionOrder(std::size_t size) cons
     return order;
 }
 
-// std::vector<PmergeMe::Node> PmergeMe::getLosers(const std::vector<Node> &winners) const
-// {
-//     std::vector<Node> losers;
+void PmergeMe::fordJohnsonDeque(std::deque<d_Node> &nodes)
+{
+    if (nodes.size() <= 1)
+        return;
 
-//     for (std::size_t i = 0; i < winners.size(); i++)
-//     {
-//         if (!winners[i].losers.empty())
-//             losers.push_back(winners[i].losers.back());
-//     }
+    bool hasStraggler = nodes.size() % 2 != 0;
+    d_Node straggler;
 
-//     return losers;
-// }
+    if (hasStraggler)
+    {
+        straggler = nodes.back();
+        nodes.pop_back();
+    }
+
+    makePairsDeque(nodes);
+    std::size_t generation = nodes[0].losers.size();
+    fordJohnsonDeque(nodes);
+
+    std::deque<std::size_t> order = generateInsertionOrderDeque(nodes.size());
+
+    for (std::size_t j = 0; j < order.size(); j++)
+    {
+        std::size_t target = order[j] - 1;
+        for (std::size_t i = 0; i < nodes.size(); i++)
+        {
+            if (nodes[i].losers.size() != generation)
+            {
+                continue;
+            }
+
+            if (target == 0)
+            {
+                d_Node guest = nodes[i].losers.back();
+                std::deque<d_Node>::iterator place = std::lower_bound(nodes.begin(), nodes.begin() + i, guest, lower_bound_compd);
+                nodes.insert(place, guest);
+                break;
+            }
+            target--;
+        }
+    }
+    for (std::size_t i = 0; i < nodes.size(); i++)
+    {
+        if (nodes[i].losers.size() == generation)
+            nodes[i].losers.pop_back();
+    }
+    
+    if (hasStraggler)
+    {
+        std::deque<d_Node>::iterator place = std::lower_bound(nodes.begin(), nodes.end(), straggler, lower_bound_compd);
+        nodes.insert(place, straggler);
+    }
+}
+
+void PmergeMe::sortDeque()
+{
+    std::deque<d_Node> nodes = createNodesDeque();
+
+    fordJohnsonDeque(nodes);
+    _deque.clear();
+
+    for (std::size_t i = 0; i < nodes.size(); i++)
+        _deque.push_back(nodes[i].value);
+}
+
+void PmergeMe::printBefore() const
+{
+    std::cout << "Before: ";
+
+    for (std::size_t i = 0; i < _vector.size(); i++)
+        std::cout << _vector[i] << " ";
+
+    std::cout << std::endl;
+}
+
+void PmergeMe::printAfter() const
+{
+    std::cout << "After:  ";
+
+    for (std::size_t i = 0; i < _vector.size(); i++)
+        std::cout << _vector[i] << " ";
+
+    std::cout << std::endl;
+}
+
+long long PmergeMe::getTime() const
+{
+    struct timeval tv;
+
+    gettimeofday(&tv, 0);
+    return static_cast<long long>(tv.tv_sec) * 1000000LL
+        + static_cast<long long>(tv.tv_usec);
+}

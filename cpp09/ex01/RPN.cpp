@@ -19,7 +19,7 @@ RPN::~RPN()
 {
 }
 
-int RPN::evaluate(const std::string &expression) // ./RPN "1" ????
+int RPN::evaluate(const std::string &expression)
 {
     std::stringstream ss(expression);
     std::string token;
